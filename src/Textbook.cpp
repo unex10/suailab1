@@ -88,3 +88,21 @@ void Textbook::print(std::ostream& out) const {
     Input::printMoney(out, getPrice());
     out << " руб.\n";
 }
+void Textbook::write(std::ostream& out) const {
+    Input::writeText(out, title_);
+    Input::writeText(out, author_);
+    out << year_ << '\n';
+    Input::writeText(out, institution_);
+    out << studyYear_ << '\n';
+    out << pages_ << '\n';
+    writePrice(out);
+}
+void Textbook::read(std::istream& in) {
+    setTitle(Input::readText(in));
+    setAuthor(Input::readText(in));
+    setYear(static_cast<int>(Input::readInteger(in, 1, 9999)));
+    setInstitution(Input::readText(in));
+    setStudyYear(static_cast<int>(Input::readInteger(in, 1, 30)));
+    setPages(static_cast<int>(Input::readInteger(in, 1, 1000000)));
+    readPrice(in);
+}

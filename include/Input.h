@@ -10,5 +10,8 @@ namespace Input {
     long long parseInteger(const Text& value, long long low, long long high);
     long long parseMoney(const Text& value);
     void requireText(const Text& value);
+    void writeText(std::ostream& out, const Text& value);
+    Text readText(std::istream& in);
+    long long readInteger(std::istream& in, long long low, long long high);
     void printMoney(std::ostream& out, long long cents);
 }

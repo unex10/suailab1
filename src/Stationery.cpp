@@ -58,3 +58,15 @@ void Stationery::print(std::ostream& out) const {
     Input::printMoney(out, getPrice());
     out << " руб.\n";
 }
+void Stationery::write(std::ostream& out) const {
+    Input::writeText(out, kind_);
+    Input::writeText(out, color_);
+    Input::writeText(out, purpose_);
+    writePrice(out);
+}
+void Stationery::read(std::istream& in) {
+    setKind(Input::readText(in));
+    setColor(Input::readText(in));
+    setPurpose(Input::readText(in));
+    readPrice(in);
+}

@@ -1,5 +1,6 @@
 #pragma once
 #include "BookStore.h"
+#include "Text.h"
 #include <iosfwd>
 class Keeper {
     BookStore** items_;
@@ -22,5 +23,7 @@ public:
     void replace(int index, const BookStore& item);
     void clear();
     void print(std::ostream& out, int type = 0) const;
+    void save(const Text& filename) const;
+    void load(const Text& filename);
 };
 std::ostream& operator<<(std::ostream& out, const Keeper& keeper);

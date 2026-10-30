@@ -107,6 +107,11 @@ long long money(const char* prompt) {
         }
     }
 }
+void writeText(std::ostream& out, const Text& value) { out << value << '\n'; }
+Text readText(std::istream& in) { Text value = line(in); requireText(value); return value; }
+long long readInteger(std::istream& in, long long low, long long high) {
+    return parseInteger(line(in), low, high);
+}
 void printMoney(std::ostream& out, long long cents) {
     char old = out.fill('0');
     out << cents / 100 << '.' << std::setw(2) << cents % 100;

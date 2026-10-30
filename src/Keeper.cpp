@@ -1,6 +1,11 @@
 #include "Keeper.h"
+#include "Book.h"
+#include "Textbook.h"
+#include "Stationery.h"
+#include "Input.h"
 #include "LabError.h"
 #include <iostream>
+#include <fstream>
 #include <utility>
 Keeper::Keeper() : items_(nullptr), size_(0), capacity_(0) {
     std::cout << "[Keeper " << this << "] конструктор без параметров\n";
@@ -88,6 +93,47 @@ void Keeper::print(std::ostream& out, int type) const {
     }
     if (!found) out << "Товары отсутствуют.\n";
     out << "Показано: " << found << ". Всего: " << size_ << '\n';
+}
+void Keeper::save(const Text& filename) const {
+    Input::requireText(filename);
+    std::ofstream out(filename.c_str(), std::ios::binary | std::ios::trunc);
+    if (!out) throw LabError("Не удалось открыть файл для записи.");
+    out << "BOOKSTORE_V1\n" << size_ << '\n';
+    for (int i = 0; i < size_; ++i) {
+        out << items_[i]->type() << '\n';
+        items_[i]->write(out);
+    }
+    out.flush();
+    if (!out) throw LabError("Не удалось записать файл полностью.");
+    out.close();
+    if (!out) throw LabError("Ошибка закрытия файла после записи.");
+}
+void Keeper::load(const Text& filename) {
+    std::ifstream in(filename.c_str(), std::ios::binary);
+    if (!in) throw LabError("Не удалось открыть файл для чтения.");
+    if (!(Input::line(in) == Text("BOOKSTORE_V1")))
+        throw LabError("Неверный формат или версия файла.");
+    int count = static_cast<int>(Input::readInteger(in, 0, MAX_ITEMS));
+    Keeper loaded(count);
+    for (int i = 0; i < count; ++i) {
+        int tag = static_cast<int>(Input::readInteger(in, 1, 3));
+        BookStore* item = nullptr;
+        if (tag == 1) item = new Book;
+        else if (tag == 2) item = new Textbook;
+        else item = new Stationery;
+        try {
+            item->read(in);
+            loaded.add(*item);
+        } catch (...) { delete item; throw; }
+        delete item;
+    }
+    char ch;
+    while (in.get(ch)) {
+        if (ch != '\n' && ch != '\r' && ch != ' ' && ch != '\t')
+            throw LabError("Лишние данные после последнего товара.");
+    }
+    if (in.bad()) throw LabError("Ошибка чтения файла.");
+    swap(loaded); // текущее состояние заменяется только после полной проверки
 }
 std::ostream& operator<<(std::ostream& out, const Keeper& keeper) {
     keeper.print(out);

@@ -87,3 +87,21 @@ void Book::print(std::ostream& out) const {
     Input::printMoney(out, getPrice());
     out << " руб.\n";
 }
+void Book::write(std::ostream& out) const {
+    Input::writeText(out, title_);
+    Input::writeText(out, author_);
+    out << year_ << '\n';
+    Input::writeText(out, annotation_);
+    Input::writeText(out, genre_);
+    out << pages_ << '\n';
+    writePrice(out);
+}
+void Book::read(std::istream& in) {
+    setTitle(Input::readText(in));
+    setAuthor(Input::readText(in));
+    setYear(static_cast<int>(Input::readInteger(in, 1, 9999)));
+    setAnnotation(Input::readText(in));
+    setGenre(Input::readText(in));
+    setPages(static_cast<int>(Input::readInteger(in, 1, 1000000)));
+    readPrice(in);
+}

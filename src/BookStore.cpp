@@ -1,4 +1,5 @@
 #include "BookStore.h"
+#include "Input.h"
 #include "LabError.h"
 #include <iostream>
 BookStore::BookStore() : price_(0) {
@@ -23,6 +24,10 @@ void BookStore::setPrice(long long price) {
     if (price < 0 || price > 1000000000LL)
         throw LabError("Стоимость вне диапазона 0..1000000000 копеек.");
     price_ = price;
+}
+void BookStore::writePrice(std::ostream& out) const { out << price_ << '\n'; }
+void BookStore::readPrice(std::istream& in) {
+    setPrice(Input::readInteger(in, 0, 1000000000LL));
 }
 std::ostream& operator<<(std::ostream& out, const BookStore& item) {
     item.print(out);
